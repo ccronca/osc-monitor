@@ -1,4 +1,5 @@
-FROM registry.redhat.io/ubi9/ubi-minimal:latest AS builder
+ARG BUILDER_IMAGE=${BUILDER_IMAGE:-registry.redhat.io/ubi9/ubi-minimal:latest}
+FROM ${BUILDER_IMAGE} AS builder
 
 ENV USER_UID=1001 \
 USER_NAME=openshift-sandboxed-containers-operator
@@ -11,7 +12,7 @@ WORKDIR /kata-containers/src/runtime
 
 RUN CGO_ENABLED=1 GOFLAGS=-tags=strictfipsruntime make monitor
 
-FROM registry.redhat.io/ubi9/ubi-minimal:latest
+FROM ${BUILDER_IMAGE}
 LABEL name="openshift-sandboxed-containers-operator-monitor" \
 version="${CI_VERSION}" \
 com.redhat.component="osc-monitor-container" \
